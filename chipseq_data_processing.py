@@ -88,7 +88,7 @@ command1= 'cp '+chromatinfile18+' '+chromatinfile18_name+'_oc.'+chromatinfile18_
 
 os.system(command1)
 
-bipartite_info(chromatinfile18,'chip_seq_dummy')
+bipartite_info(chromatinfile18,chipseq_folder)
 
 
 
