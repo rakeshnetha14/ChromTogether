@@ -39,6 +39,7 @@ The pipeline generates multiple files, but some important files are
 The directory "example" contains example_interactions.bed which contains 3D spatial interactions between regions, chipseq folder with few chip-seq files, and pwm folder with few PWM files.
 
 Execute the following command:
+
 	./pipeline.sh -a example/example_interactions.bed -b "path of the genome sequence file" -c chipseq -d pwm -e 500
 
 
