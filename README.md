@@ -9,6 +9,7 @@ The pipelines also requires packages bedtools, MEME Suite and various python lib
 
 ### Running the pipeline
 Usage: ./pipeline.sh -a file1 -b genomefastafile -c chipseq_directory -d pwm_directory -e number_of_randomizations
+
 	-a chromatin fragment interaction file
 	-b genome sequence fasta file
 	-c directory containing chip-seq files and is optional if you want analyse binding sites
@@ -37,7 +38,8 @@ The pipeline generates multiple files, but some important files are
 
 The directory "example" contains example_interactions.bed which contains 3D spatial interactions between regions, chipseq folder with few chip-seq files, and pwm folder with few PWM files.
 
-Execute the following command
+Execute the following command:
+
 ./pipeline.sh -a example/example_interactions.bed -b "path of the genome sequence file" -c chipseq -d pwm -e 500
 
 
