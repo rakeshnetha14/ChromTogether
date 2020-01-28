@@ -3,7 +3,20 @@ Pipeline to find colocalizing TF pairs in 3D chromatin
 
 This is a pipeline to find transcription factor(TF) pairs co-localizing in spatially proximal chromatin regions. Also, the pipeline finds the same co-localizing TF pairs in sequential contiguous i.e. on linear genome.
 
-Getting Started
+### Getting Started
+
+The pipelines also requires packages bedtools, MEME Suite and various python libraries i.e. numpy, networkx, matplotlib etc. preinstalled in the system.
+
+### Running the pipeline
+Usage: ./pipeline.sh -a file1 -b genomefastafile -c chipseq_directory -d pwm_directory -e number_of_randomizations
+	-a chromatin fragment interaction file
+	-b genome sequence fasta file
+	-c directory containing chip-seq files and is optional if you want analyse binding sites
+	-d directory containing pwm files of TFs and is optional if you want analyse motif sites
+	-e number of randomization to perform
+  
+  
+### Input files  
 
 The pipeline requires the following input files:
 
@@ -12,6 +25,22 @@ The pipeline requires the following input files:
 3)PWMs files in meme format for the TFs you want analyze co-occurrence for motif sites. Name the files with TF name i.e. for "ATF1" 
 the PWM file is "ATF1.meme" and store all the files in a single directory.
 
-The pipelines also requires packages bedtools, MEME Suite and various python libraries i.e. numpy, networkx, matplotlib etc. preinstalled in the system.
+### Output files
+
+The pipeline generates multiple files, but some important files are
+1) qv_chip_3D.dat, qv_chip_3D.png gives the q-values for each pair of TFs for co-occurrence of binding peaks in 3D spatial proximal regions in data and heatmap respectively.
+2) qv_chip_1D.dat, qv_chip_1D.png gives the q-values for each pair of TFs for co-occurrence of binding peaks in sequential contiguous regions in data and heatmap respectively.
+3) qv_pwm_3D.dat, qv_pwm_3D.png gives the q-values for each pair of TFs for co-occurrence of motif sites in 3D spatial proximal regions in data and heatmap respectively.
+4) qv_pwm_1D.dat, qv_pwm_1D.png gives the q-values for each pair of TFs for co-occurrence of motif sites in sequential contiguous regions in data and heatmap respectively.
+
+### Running the example
+
+The directory "example" contains example_interactions.bed which contains 3D spatial interactions between regions, chipseq folder with few chip-seq files, and pwm folder with few PWM files.
+
+Execute the following command
+./pipeline.sh -a example/example_interactions.bed -b "path of the genome sequence file" -c chipseq -d pwm -e 500
+
+
+
 
 
