@@ -3,11 +3,11 @@ import sys
 import numpy as np
 import networkx as nx
 
-def individual_fragments(IntData):
+def individual_fragments(ffile1):
 	"""
 	This function is to create indidual fragment data file format from chromatin interaction data file, which is used for sorting and merging.
 	"""
-	f=open(IntData,'r');
+	f=open(ffile1,'r');
 	s=[line.split('\t') for line in f]
 	f.close()
 	
@@ -16,8 +16,8 @@ def individual_fragments(IntData):
 		ss=str(s[i][0])+'\t'+str(s[i][1])+'\t'+str(s[i][2])+'\n'+str(s[i][0])+'\t'+str(s[i][3])+'\t'+str(s[i][4]).strip('\n')+'\n';
 		tx.append(ss);
 	
-	[IntData_name,IntData_extension]=IntData.split('.')
-	f1=open(IntData_name+'_individual_fragments.'+IntData_extension,'w');
+	[ffile1_name,ffile1_extension]=ffile1.split('.')
+	f1=open(ffile1_name+'_individual_fragments.'+ffile1_extension,'w');
 	data=''.join(tx);
 	f1.write(data);
 	f1.close();
