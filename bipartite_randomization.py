@@ -107,7 +107,9 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 						rxy[z/2][z1/2]+=1;	
 	#return rxy2,rxy
 	"""
-	This function creates random biparite graphs from real bipartite network between chromatin fragments and TFs. For each random network co-occurrence of TF pairs in spatial interactions is calculated and is compared with real network co-occurrence for each TF pair.
+	This function creates random biparite graphs from real bipartite network between chromatin fragments and TFs. 
+	For each random network co-occurrence of TF pairs in spatial interactions is calculated and is compared with 
+	real network co-occurrence for each TF pair.
 	"""
 	countn=np.zeros([ntfs,ntfs],dtype=int);
 	countn1=np.zeros([ntfs,ntfs],dtype=int);
