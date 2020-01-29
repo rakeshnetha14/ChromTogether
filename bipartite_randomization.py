@@ -5,8 +5,12 @@ import random
 import copy
 import csv
 import networkx as nx
+import matplotlib
+import matplotlib.pyplot as plt
 
-def bipartite_randomizations(file1,file2,nb):
+os.system('mkdir randomizations')
+
+def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 	"""
 	This function calculates for each TF pairs the number of spatial chromatin interactions on which they are co-occurring.
 	"""
@@ -35,19 +39,42 @@ def bipartite_randomizations(file1,file2,nb):
 	s1=[line.split('\t') for line in f1];
 	f1.close()
 	ntfs=len(s1[0])-3;
-	d2={}
-	realBedges=[];
-	BB={};
-	k=0
-	for i in range(len(s1)):
-		TFlist=[];
-		for j in range(ntfs):
-			if(int(float(s1[i][3+j]))==1):
-				TFlist.append(j)
-				realBedges.append([i,len(s1)+j,k]);
-				BB[k]=i;
-				k+=1;
-		d2[i]=TFlist
+	if dimension=='3D':
+		d2={}
+		realBedges=[];
+		BB={};
+		k=0
+		for i in range(len(s1)):
+			TFlist=[];
+			for j in range(ntfs):
+				if(int(float(s1[i][3+j]))==1):
+					TFlist.append(j)
+					realBedges.append([i,len(s1)+j,k]);
+					BB[k]=i;
+					k+=1;
+			d2[i]=TFlist
+	elif dimension=='1D':
+		d2={}
+		realBedges=[];
+		BB={};
+		k=0
+		for i in range(len(s1)):
+			TFlist=[];
+			for j in range(ntfs):
+				if(int(float(s1[i][3+j]))==2):
+					TFlist.append(2*j)
+					TFlist.append((2*j)+1)
+					realBedges.append([i,len(s1)+(2*j),k]);
+					realBedges.append([i,len(s1)+(2*j)+1,k]);
+					BB[k]=i;
+					BB[k+1]=i;
+					k+=2;
+				elif(int(float(s1[i][3+j]))==1):
+					TFlist.append(2*j)
+					realBedges.append([i,len(s1)+(2*j),k]);
+					BB[k]=i;
+					k+=1;
+			d2[i]=TFlist
 	lB=[];
 	for i in range(max(realdegreeseq)+1):
 		lB.append([])
@@ -63,26 +90,33 @@ def bipartite_randomizations(file1,file2,nb):
 			j1+=1
 		else:
 			d1[tuple(ll)]=1
-	rxy1=np.zeros([ntfs,ntfs],dtype=int)
-	for i in range(len(realGedges)):
-		for z in d2[int(realGedges[i][0])]:
-			for z1 in d2[int(realGedges[i][1])]:
-				if(d1.has_key((int(realGedges[i][0]),len(s1)+z)) and d1.has_key((int(realGedges[i][1]),len(s1)+z1))):
-					rxy1[z][z1]+=1;
-	rxy2=rxy1+np.transpose(rxy1)
-	rxy=np.zeros([ntfs,ntfs],dtype=int)
-	for i in range(len(s1)):
-		for z in d2[int(i)]:
-			for z1 in d2[int(i)]:
-				rxy[z][z1]+=1;	
+	if dimension=='3D':
+		rxy1=np.zeros([ntfs,ntfs],dtype=int)
+		for i in range(len(realGedges)):
+			for z in d2[int(realGedges[i][0])]:
+				for z1 in d2[int(realGedges[i][1])]:
+					if(d1.has_key((int(realGedges[i][0]),len(s1)+z)) and d1.has_key((int(realGedges[i][1]),len(s1)+z1))):
+						rxy1[z][z1]+=1;
+		rxy2=rxy1+np.transpose(rxy1)
+	elif dimension=='1D':
+		rxy=np.zeros([ntfs,ntfs],dtype=int)
+		for i in range(len(s1)):
+			for z in d2[int(i)]:
+				for z1 in d2[int(i)]:
+					if z!=z1:
+						rxy[z/2][z1/2]+=1;	
 	#return rxy2,rxy
 	"""
-	This function creates random biparite graphs from real bipartite network between chromatin fragments and TFs. For each random network co-occurrence of TF pairs in spatial interactions is calculated and is compared with real network co-occurrence for each TF pair.
+	This function creates random biparite graphs from real bipartite network between chromatin fragments and TFs. 
+	For each random network co-occurrence of TF pairs in spatial interactions is calculated and is compared with 
+	real network co-occurrence for each TF pair.
 	"""
 	countn=np.zeros([ntfs,ntfs],dtype=int);
 	countn1=np.zeros([ntfs,ntfs],dtype=int);
-	os.system('mkdir randomizations')
-	name1='randomizations/rand_'
+	#countn2=np.zeros([ntfs,ntfs],dtype=int);
+	#countn3=np.zeros([ntfs,ntfs],dtype=int);
+	name1='randomizations/rand_'+peaks+'_'+dimension+'_'
+	#name2='randomizations/rand_'+peaks+'_'+dimension+'_'
 	cfrl1=[-1,0,1]
 	cfrl3=[0,1]
 	cfrl2=[-2,-1,0,1,2]
@@ -93,6 +127,7 @@ def bipartite_randomizations(file1,file2,nb):
 	for ii in range(nb):
 		print ii
 		xy1=np.zeros([ntfs,ntfs],dtype=int);
+		xy=np.zeros([ntfs,ntfs],dtype=int);
 		jj=0
 		for i in range(int(len(realBedges)*0.3)):
 			ren=np.random.choice(len(realBedges),1)
@@ -135,25 +170,40 @@ def bipartite_randomizations(file1,file2,nb):
 				d4[rer1].append(ret2-len(s1))
 				d4[rer2].remove(ret2-len(s1))
 				d4[rer2].append(ret1-len(s1))
-		for i in range(len(realGedges)):
-			for z in d4[int(realGedges[i][0])]:
-				for z1 in d4[int(realGedges[i][1])]:
-					#if(d3.has_key((int(realGedges[i][0]),len(s1)+z)) and d3.has_key((int(realGedges[i][1]),len(s1)+z1))):
-					xy1[z][z1]+=1;
-		xy2=xy1+np.transpose(xy1)	
-		with open(name1+str(ii)+'.csv', "wb") as f:
-    			writer = csv.writer(f)
-    			writer.writerows(xy2)
-		for z in range(ntfs):
-			for z1 in range(ntfs):
-				if(xy2[z][z1]>=rxy2[z][z1]):
-					countn[z][z1]+=1;
-				if(xy2[z][z1]<=rxy2[z][z1]):
-					countn1[z][z1]+=1;
-	with open('randomizations/ranp.csv', "wb") as f:
+		if dimension=='3D':
+			for i in range(len(realGedges)):
+				for z in d4[int(realGedges[i][0])]:
+					for z1 in d4[int(realGedges[i][1])]:
+						xy1[z][z1]+=1;
+			xy2=xy1+np.transpose(xy1)
+			with open(name1+str(ii)+'.csv', "wb") as f:
+    				writer = csv.writer(f)
+    				writer.writerows(xy2)
+			for z in range(ntfs):
+				for z1 in range(ntfs):
+					if(xy2[z][z1]>=rxy2[z][z1]):
+						countn[z][z1]+=1;
+					if(xy2[z][z1]<=rxy2[z][z1]):
+						countn1[z][z1]+=1;
+		elif dimension=='1D':
+			for i in range(len(s1)):
+				for z in d4[int(i)]:
+					for z1 in d4[int(i)]:
+						if z!=z1:
+							xy[z/2][z1/2]+=1;	
+			with open(name1+str(ii)+'.csv', "wb") as f:
+    				writer = csv.writer(f)
+    				writer.writerows(xy)
+			for z in range(ntfs):
+				for z1 in range(ntfs):
+					if(xy[z][z1]>=rxy[z][z1]):
+						countn[z][z1]+=1;
+					if(xy[z][z1]<=rxy[z][z1]):
+						countn1[z][z1]+=1;
+	with open('randomizations/ranp_'+peaks+'_'+dimension+'.csv', "wb") as f:
     		writer = csv.writer(f)
     		writer.writerows(countn)
-	with open('randomizations/rann.csv', "wb") as f:
+	with open('randomizations/rann_'+peaks+'_'+dimension+'.csv', "wb") as f:
     		writer = csv.writer(f)
     		writer.writerows(countn1)
 	return ntfs
@@ -185,7 +235,7 @@ def qvalueCalculate(mylist,fdr,t):
 	
 	return qvalue 
 
-def qvalues(file1,file2,nb,ntfs):
+def qvalues(file1,file2,nb,ntfs,peaks,dimension):
 	"""
 	This function calculates the empirical q-values for both attracting and repelling TF pairs.
 	"""
@@ -205,7 +255,7 @@ def qvalues(file1,file2,nb,ntfs):
 	q=qvalueCalculate(pv,fdr,t)
 	fdr,t=fdrestimate(pv1,ntfs)
 	qdash=qvalueCalculate(pv1,fdr,t)
-	f4=open('qvalue_matrix.dat','w')
+	f4=open('qv_'+peaks+'_'+dimension+'.dat','w')
 	count=0
 	for i in range(ntfs):
 		for j in range(ntfs):
@@ -220,16 +270,82 @@ def qvalues(file1,file2,nb,ntfs):
 			count+=1
 		f4.write('\n')
 
+def heatmap_generation(file1,file2,ntfs):
+	"""
+	This function generates heatmap showing both attracting and repelling TF pairs.
+	"""
+	M1=np.zeros([1000,4],dtype=float)
+	for i in range(50):
+		M1[i][1]=1-((0.75/50)*i)
+	for j in range(950,1000):
+		M1[j][0]=0.25+((0.75/50)*(j-949))
+	for k in range(1000):
+		M1[k][3]=1.0
+	f5=open(file1,'r');
+	s5=[line.split('\t') for line in f5]
+	f5.close()
+	M=np.zeros([ntfs,ntfs],dtype=float);
+	for i in range(ntfs):
+		for j in range(ntfs):
+			M[i][j]=float(s5[i][j])
+	newcmp = matplotlib.colors.ListedColormap(M1)
+	[file1_name,file1_extension]=file1.split('.')
+	f6=open(file2,'r');
+	s6=f6.readlines();
+	f6.close();
+	fig=plt.figure(figsize=(18,15))
+	ax=fig.add_subplot(111)
+	cax = ax.matshow(M, interpolation='nearest',cmap=newcmp,vmin=0, vmax=1)
+	fig.colorbar(cax)
+	ax.set_xticks(np.arange(ntfs))
+	ax.set_yticks(np.arange(ntfs))
+	ax.set_xticklabels(s6,fontsize=14,weight='bold')
+	ax.set_yticklabels(s6,fontsize=14,weight='bold')
+	ax.xaxis.set_ticks_position('bottom')
+	ax.xaxis.set_tick_params(rotation=90 )
+	plt.savefig(file1_name+'.png',dpi=180)
+	plt.savefig(file1_name+'.pdf',dpi=180)
+	
+
 
 
 chromatinfile=sys.argv[1]
-nr1=sys.argv[2]
+nr1=int(sys.argv[2])
+com=int(sys.argv[3])
 [chromatinfile_name,chromatinfile_extension]=chromatinfile.split('.')
-chromatinfile19=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_asnodes.'+chromatinfile_extension
-chromatinfile20=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort_merge_oc.'+chromatinfile_extension
+chromatinfile19=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_asnodes.'+chromatinfile_extension
+chromatinfile20=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort_merge_oc.'+chromatinfile_extension
+chromatinfile21=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort_merge_ocd.'+chromatinfile_extension
+chromatinfile22=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort_merge_mc.'+chromatinfile_extension
+chromatinfile23=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort_merge_mcd.'+chromatinfile_extension
 
-ntfs1=bipartite_randomizations(chromatinfile19,chromatinfile20,nr1)
-qvalues('randomizations/ranp.csv','randomizations/rann.csv',nr1,ntfs1)
+if com==2:
+	ntfs1=bipartite_randomizations(chromatinfile19,chromatinfile20,nr1,'chip','3D')
+	ntfs1=bipartite_randomizations(chromatinfile19,chromatinfile21,nr1,'chip','1D')
+	qvalues('randomizations/ranp_chip_3D.csv','randomizations/rann_chip_3D.csv',nr1,ntfs1,'chip','3D')
+	qvalues('randomizations/ranp_chip_1D.csv','randomizations/rann_chip_1D.csv',nr1,ntfs1,'chip','1D')
+	heatmap_generation('qv_chip_3D.dat','tf_chipname.txt',ntfs1)
+	heatmap_generation('qv_chip_1D.dat','tf_chipname.txt',ntfs1)
+	ntfs2=bipartite_randomizations(chromatinfile19,chromatinfile22,nr1,'pwm','3D')
+	ntfs2=bipartite_randomizations(chromatinfile19,chromatinfile23,nr1,'pwm','1D')
+	qvalues('randomizations/ranp_pwm_3D.csv','randomizations/rann_pwm_3D.csv',nr1,ntfs2,'pwm','3D')
+	qvalues('randomizations/ranp_pwm_1D.csv','randomizations/rann_pwm_1D.csv',nr1,ntfs2,'pwm','1D')
+	heatmap_generation('qv_pwm_3D.dat','tf_pwmname.txt',ntfs2)
+	heatmap_generation('qv_pwm_1D.dat','tf_pwmname.txt',ntfs2)
+elif com==1:
+	ntfs2=bipartite_randomizations(chromatinfile19,chromatinfile22,nr1,'pwm','3D')
+	ntfs2=bipartite_randomizations(chromatinfile19,chromatinfile23,nr1,'pwm','1D')
+	qvalues('randomizations/ranp_pwm_3D.csv','randomizations/rann_pwm_3D.csv',nr1,ntfs2,'pwm','3D')
+	qvalues('randomizations/ranp_pwm_1D.csv','randomizations/rann_pwm_1D.csv',nr1,ntfs2,'pwm','1D')
+	heatmap_generation('qv_pwm_3D.dat','tf_pwmname.txt',ntfs2)
+	heatmap_generation('qv_pwm_1D.dat','tf_pwmname.txt',ntfs2)
+elif com==0:
+	ntfs1=bipartite_randomizations(chromatinfile19,chromatinfile20,nr1,'chip','3D')
+	ntfs1=bipartite_randomizations(chromatinfile19,chromatinfile21,nr1,'chip','1D')
+	qvalues('randomizations/ranp_chip_3D.csv','randomizations/rann_chip_3D.csv',nr1,ntfs1,'chip','3D')
+	qvalues('randomizations/ranp_chip_1D.csv','randomizations/rann_chip_1D.csv',nr1,ntfs1,'chip','1D')
+	heatmap_generation('qv_chip_3D.dat','tf_chipname.txt',ntfs1)
+	heatmap_generation('qv_chip_1D.dat','tf_chipname.txt',ntfs1)
 
 
 

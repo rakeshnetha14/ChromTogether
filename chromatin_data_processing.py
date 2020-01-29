@@ -3,21 +3,40 @@ import sys
 import numpy as np
 import networkx as nx
 
-def individual_fragments(IntData):
+def intrachoromosomal_interactions(f1):
 	"""
-	This function is to create indidual fragment data file format from chromatin interaction data file, which is used for sorting and merging.
+	This function moves all the intra chromosomal interactions into another file
 	"""
-	f=open(IntData,'r');
+	f0=open(f1,'r');
+	s0=[line.split('\t') for line in f0];
+	f0.close()
+	tx=[]
+	for i in range(len(s0)):
+		if s0[i][0]==s0[i][3]:
+			ss=str(s0[i][0])+'\t'+str(s0[i][1])+'\t'+str(s0[i][2])+'\t'+str(s0[i][4])+'\t'+str(s0[i][5]).strip('\n')+'\n';
+			tx.append(ss);
+	[f1_name,f1_extension]=f1.split('.')
+	f00=open(f1_name+'_intra.'+f1_extension,'w')
+	data0=''.join(tx);
+	f00.write(data0);
+	f00.close();
+	s0=[];tx=[];data0=[];
+	
+def individual_fragments(ffile1):
+	"""
+	This function is to create indidual fragment data file format from chromatin interaction data file, which is used 
+	for sorting and merging.
+	"""
+	f=open(ffile1,'r');
 	s=[line.split('\t') for line in f]
 	f.close()
-	
 	tx=[];
 	for i in range(len(s)):
 		ss=str(s[i][0])+'\t'+str(s[i][1])+'\t'+str(s[i][2])+'\n'+str(s[i][0])+'\t'+str(s[i][3])+'\t'+str(s[i][4]).strip('\n')+'\n';
 		tx.append(ss);
 	
-	[IntData_name,IntData_extension]=IntData.split('.')
-	f1=open(IntData_name+'_individual_fragments.'+IntData_extension,'w');
+	[ffile1_name,ffile1_extension]=ffile1.split('.')
+	f1=open(ffile1_name+'_individual_fragments.'+ffile1_extension,'w');
 	data=''.join(tx);
 	f1.write(data);
 	f1.close();
@@ -28,11 +47,14 @@ def individual_fragments(IntData):
 
 def merging_fragments(file1,file2):
 	"""
-	This function corrects the coordinates in chromatin interaction data file to the corresponding overlapping regions after merging the overlapping fragments into one fragment
+	This function corrects the coordinates in chromatin interaction data file to the corresponding overlapping regions 
+	after merging the overlapping fragments into one fragment
 	"""
 	f2=open(file1,'r');
 	s2=[line.split('\t') for line in f2];
 	f2.close()
+	#s2_array=np.array(s2)
+	#chID=np.unique(s2_array[:,0])
 	ra=[0];
 	chid=s2[0][0];
 	k=0;
@@ -281,33 +303,36 @@ def highlength_removal(file9):
 
 
 
+print "Processing the chromtin interaction data ..."
 chromatinfile=sys.argv[1]
 [chromatinfile_name,chromatinfile_extension]=chromatinfile.split('.')
-chromatinfile1=chromatinfile_name+'_sort.'+chromatinfile_extension
-chromatinfile2=chromatinfile_name+'_individual_fragments.'+chromatinfile_extension
-chromatinfile3=chromatinfile_name+'_individual_fragments_sort.'+chromatinfile_extension
-chromatinfile4=chromatinfile_name+'_individual_fragments_sort_merge.'+chromatinfile_extension
-chromatinfile5=chromatinfile_name+'_sort_aftermerging.'+chromatinfile_extension
-chromatinfile6=chromatinfile_name+'_sort_aftermerging_sort.'+chromatinfile_extension
-chromatinfile7=chromatinfile_name+'_sort_aftermerging_sort_rrm.'+chromatinfile_extension
-chromatinfile8=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm.'+chromatinfile_extension
-chromatinfile9=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil.'+chromatinfile_extension
-chromatinfile10=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_individual_fragments.'+chromatinfile_extension
-chromatinfile11=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_individual_fragments_sort.'+chromatinfile_extension
-chromatinfile12=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_individual_fragments_sort_merge.'+chromatinfile_extension
-chromatinfile13=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_asnodes.'+chromatinfile_extension
-chromatinfile14=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil.'+chromatinfile_extension
-chromatinfile15=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil.'+chromatinfile_extension
-chromatinfile16=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments.'+chromatinfile_extension
-chromatinfile17=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort.'+chromatinfile_extension
-chromatinfile18=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort_merge.'+chromatinfile_extension
+chromatinfile0=chromatinfile_name+'_intra.'+chromatinfile_extension
+chromatinfile1=chromatinfile_name+'_intra_sort.'+chromatinfile_extension
+chromatinfile2=chromatinfile_name+'_intra_individual_fragments.'+chromatinfile_extension
+chromatinfile3=chromatinfile_name+'_intra_individual_fragments_sort.'+chromatinfile_extension
+chromatinfile4=chromatinfile_name+'_intra_individual_fragments_sort_merge.'+chromatinfile_extension
+chromatinfile5=chromatinfile_name+'_intra_sort_aftermerging.'+chromatinfile_extension
+chromatinfile6=chromatinfile_name+'_intra_sort_aftermerging_sort.'+chromatinfile_extension
+chromatinfile7=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm.'+chromatinfile_extension
+chromatinfile8=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm.'+chromatinfile_extension
+chromatinfile9=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil.'+chromatinfile_extension
+chromatinfile10=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_individual_fragments.'+chromatinfile_extension
+chromatinfile11=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_individual_fragments_sort.'+chromatinfile_extension
+chromatinfile12=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_individual_fragments_sort_merge.'+chromatinfile_extension
+chromatinfile13=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_asnodes.'+chromatinfile_extension
+chromatinfile14=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil.'+chromatinfile_extension
+chromatinfile15=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil.'+chromatinfile_extension
+chromatinfile16=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments.'+chromatinfile_extension
+chromatinfile17=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort.'+chromatinfile_extension
+chromatinfile18=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort_merge.'+chromatinfile_extension
 
+intrachoromosomal_interactions(chromatinfile)
 
-command1 = 'bedtools sort -i'+' '+chromatinfile+' > '+chromatinfile1
+command1 = 'bedtools sort -i'+' '+chromatinfile0+' > '+chromatinfile1
 
 os.system(command1)
 
-individual_fragments(chromatinfile)
+individual_fragments(chromatinfile0)
 
 command2= 'bedtools sort -i'+' '+chromatinfile2+' > '+chromatinfile3
 command3= 'bedtools merge -i'+' '+chromatinfile3+' > '+chromatinfile4

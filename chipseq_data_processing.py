@@ -4,11 +4,11 @@ import numpy as np
 
 def bipartite_info(file1,chipseq_folder):
 	"""
-	This function creates a data file which contain the binding information for each TF in columns on each chromatin fragment in the rows.
+	This function creates a data file which contain the binding information for each TF in columns on each chromatin 
+	fragment in the rows.
 	"""
 	chipf=os.listdir(chipseq_folder)
 	chipf.sort()
-	chipf
 	#####	
 	f=open(file1,'r');
 	s=[line.split('\t') for line in f];
@@ -30,8 +30,10 @@ def bipartite_info(file1,chipseq_folder):
 	b1=map(int,b1);
 	b2=map(int,b2);
 	#####
+	chipf_name=[]
 	for z in range(len(chipf)):
 		#print z;
+		chipf_name.append(chipf[z].split('.')[0]);
 		with open(chipseq_folder+'/'+chipf[z],'r') as f1:
 			s1=[line.split('\t')[0:3] for line in f1];
 		f1.close();
@@ -76,17 +78,52 @@ def bipartite_info(file1,chipseq_folder):
 		data2=''.join(data1);
 		f3.write(data2);
 		f3.close();
+		f4=open(file1_name+'_ocd.'+file1_extension,'r');
+		data3=f4.readlines();
+		f4.close();
+		ind=[];
+		ind1=[];
+		for i in range(23):
+			for l in range(ra1[i],ra1[i+1]):
+				for k in range(ra[i],ra[i+1]):
+					if((a1[l]<=b1[k]<=a2[l]) or (a1[l]<=b2[k]<=a2[l]) or (b1[k]<=a1[l]<=b2[k]) or (b1[k]<=a2[l]<=b2[k])):
+						ind.append(k);
+		q2, q2c = np.unique(ind, return_counts=True)
+		c3=np.zeros(len(s));
+		j2=0;
+		j3=0;
+		for i in range(len(data3)):
+			if(j2<len(q2)):
+				if(q2[j2]==i):
+					if q2c[j2]>=2:
+						c3[i]=2
+					else:
+						c3[i]=1
+					j2+=1
+			tx='\t'+str(c3[i])+'\n'
+			data3[i]=data3[i].replace('\n',tx);
+		f5=open(file1_name+'_ocd.'+file1_extension,'w');
+		data4=''.join(data3);
+		f5.write(data4);
+		f5.close();
+	f6=open('tf_chipname.txt','w');
+	data5='\n'.join(chipf_name);
+	f6.write(data5);
+	f6.close();
 
 
+print "Creating bipartite graph between genomic fragments and TFs ..."
 chromatinfile=sys.argv[1]
 chipseq_folder=sys.argv[2]
 [chromatinfile_name,chromatinfile_extension]=chromatinfile.split('.')
-chromatinfile18=chromatinfile_name+'_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort_merge.'+chromatinfile_extension
+chromatinfile18=chromatinfile_name+'_intra_sort_aftermerging_sort_rrm_srm_2kbfil_d20fil_30kblenfil_individual_fragments_sort_merge.'+chromatinfile_extension
 
 [chromatinfile18_name,chromatinfile18_extension]=chromatinfile18.split('.')
 command1= 'cp '+chromatinfile18+' '+chromatinfile18_name+'_oc.'+chromatinfile18_extension
+command2= 'cp '+chromatinfile18+' '+chromatinfile18_name+'_ocd.'+chromatinfile18_extension
 
 os.system(command1)
+os.system(command2)
 
 bipartite_info(chromatinfile18,chipseq_folder)
 
