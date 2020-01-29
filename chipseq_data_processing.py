@@ -110,6 +110,7 @@ def bipartite_info(file1,chipseq_folder):
 	data5='\n'.join(chipf_name);
 	f6.write(data5);
 	f6.close();
+	s=[];s1=[];data1=[];data2=[];data3=[];data4=[];
 
 
 print "Creating bipartite graph between genomic fragments and TFs ..."
