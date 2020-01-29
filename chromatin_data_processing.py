@@ -24,7 +24,8 @@ def intrachoromosomal_interactions(f1):
 	
 def individual_fragments(ffile1):
 	"""
-	This function is to create indidual fragment data file format from chromatin interaction data file, which is used for sorting and merging.
+	This function is to create indidual fragment data file format from chromatin interaction data file, which is used 
+	for sorting and merging.
 	"""
 	f=open(ffile1,'r');
 	s=[line.split('\t') for line in f]
@@ -46,7 +47,8 @@ def individual_fragments(ffile1):
 
 def merging_fragments(file1,file2):
 	"""
-	This function corrects the coordinates in chromatin interaction data file to the corresponding overlapping regions after merging the overlapping fragments into one fragment
+	This function corrects the coordinates in chromatin interaction data file to the corresponding overlapping regions 
+	after merging the overlapping fragments into one fragment
 	"""
 	f2=open(file1,'r');
 	s2=[line.split('\t') for line in f2];
