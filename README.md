@@ -5,7 +5,7 @@ This is a pipeline to find transcription factor(TF) pairs co-localizing in spati
 
 ### Getting Started
 
-The pipelines also requires packages bedtools, MEME Suite and various python libraries i.e. numpy, networkx, matplotlib etc. preinstalled in the system.
+The pipelines also requires packages bedtools, MEME Suite 5.1.0 and various python libraries i.e. numpy, networkx, matplotlib etc. preinstalled in the system.
 
 ### Running the pipeline
 
@@ -27,7 +27,7 @@ The pipeline requires the following input files:
 
 3)PWMs files in meme format for the TFs you want analyze co-occurrence for motif sites. Name the files with TF name i.e. for "ATF1" the PWM file is "ATF1.meme" and store all the files in a single directory.
 
-4)Reference genome sequence fasta file. For example data set analysis, you can download the human reference genome(hg19) from the following link https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz
+4)Reference genome sequence fasta file. For example data set analysis, please download the human reference genome(hg19) from the following link https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz and then unzip and place it in the example folder.
 
 ### Output files
 
@@ -43,7 +43,7 @@ The directory "example" contains example_interactions.bed which contains 3D spat
 
 Execute the following command:
 
-	./pipeline.sh -a example/example_interactions.bed -b "path of the genome sequence file" -c chipseq -d pwm -e 500
+	./pipeline.sh -a example/example_interactions.bed -b example/hg19.fa -c chipseq -d pwm -e 500
 
 
 
