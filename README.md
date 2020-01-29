@@ -27,7 +27,7 @@ The pipeline requires the following input files:
 
 3)PWMs files in meme format for the TFs you want analyze co-occurrence for motif sites. Name the files with TF name i.e. for "ATF1" the PWM file is "ATF1.meme" and store all the files in a single directory.
 
-4) Reference genome sequence fasta file. For example data set analysis, you can download the human reference genome(hg19) from the following link https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz
+4)Reference genome sequence fasta file. For example data set analysis, you can download the human reference genome(hg19) from the following link https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz
 
 ### Output files
 
