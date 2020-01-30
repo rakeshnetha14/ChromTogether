@@ -52,6 +52,8 @@ then
       python bipartite_randomization.py $file1 $number_of_randomizations 1
    fi
 else
+   python chipseq_data_processing.py $file1 $chipseq_directory
+   python motifsites.py $file1 $genomefastafile $pwm_directory
    python bipartite_randomization.py $file1 $number_of_randomizations 2
 fi
 
