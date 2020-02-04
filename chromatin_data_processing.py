@@ -53,45 +53,56 @@ def merging_fragments(file1,file2):
 	f2=open(file1,'r');
 	s2=[line.split('\t') for line in f2];
 	f2.close()
-	#s2_array=np.array(s2)
-	#chID=np.unique(s2_array[:,0])
+	s2_array=np.array(s2)
+	chID=np.unique(s2_array[:,0])
+	chID_d={}
+	chID_d[s2[0][0]]=0;
 	ra=[0];
 	chid=s2[0][0];
 	k=0;
-	for l in range(22):
+	i1=0;
+	for l in range(len(chID)-1):
 		while(chid==s2[k][0]):
 			k+=1;
 		ra.append(k);
 		chid=s2[k][0];
+		chID_d[s2[k][0]]=i1+1;
+		i1+=1;
 	ra.append(len(s2));
 	####
 	f3=open(file2,'r');
 	s3=[line.split('\t') for line in f3];
 	f3.close()
-	#####
+	s3_array=np.array(s3)
+	chID1=np.unique(s3_array[:,0])
+	chID1_d={};
+	chID1_d[s3[0][0]]=0;
 	ra1=[0];
 	chid=s3[0][0];
 	k=0;
-	for l in range(22):
+	i1=0;
+	for l in range(len(chID1)-1):
 		while(chid==s3[k][0]):
 			k+=1;
 		ra1.append(k);
 		chid=s3[k][0];
+		chID1_d[s3[k][0]]=i1+1;
+		i1+=1;
 	ra1.append(len(s3));
 	#####
-	for i in range(23):
-		for k in range(ra[i],ra[i+1]):
-			l1=ra1[i]
-			for l in range(l1,ra1[i+1]):
+	for i in range(len(chID)):
+		for k in range(ra[chID_d[chID[i]]],ra[chID_d[chID[i]]+1]):
+			l1=ra1[chID1_d[chID[i]]]
+			for l in range(l1,ra1[chID1_d[chID[i]]+1]):
 				if (int(s3[l][1])<=int(s2[k][1]) and int(s2[k][2])<=int(s3[l][2])):
 					s2[k][1]=str(int(s3[l][1]))
 					s2[k][2]=str(int(s3[l][2]))
 					break
 				else:
 					l1+=1
-	for i in range(23):
-		for k in range(ra[i],ra[i+1]):
-			for l in range(ra1[i],ra1[i+1]):
+	for i in range(len(chID)):
+		for k in range(ra[chID_d[chID[i]]],ra[chID_d[chID[i]]+1]):
+			for l in range(ra1[chID1_d[chID[i]]],ra1[chID1_d[chID[i]]+1]):
 				if (int(s3[l][1])<=int(s2[k][3]) and int(s2[k][4])<=int(s3[l][2])):
 					s2[k][3]=str(int(s3[l][1]))
 					s2[k][4]=s3[l][2]
@@ -115,19 +126,24 @@ def duplicate_removal(file3):
 	f5=open(file3,'r');
 	s5=[line.split('\t') for line in f5];
 	f5.close();
-	######
+	s5_array=np.array(s5)
+	chID2=np.unique(s5_array[:,0])
+	#chID2_d={}
+	#chID2_d[s5[0][0]]=0;
 	ra=[0];
 	chid=s5[0][0];
 	k=0;
-	for l in range(22):
+	for l in range(len(chID2)-1):
 		while(chid==s5[k][0]):
 			k+=1;
 		ra.append(k);
 		chid=s5[k][0];
+		#chID2_d[s5[k][0]]=i1+1;
+		#i1+1;
 	ra.append(len(s5));
 	######
 	ind=[];
-	for k in range(23):
+	for k in range(len(chID2)):
 		for i in range(ra[k],ra[k+1]):
 			for j in range(i+1,ra[k+1]):
 				if(int(s5[i][1])==int(s5[j][1]) and int(s5[i][2])==int(s5[j][2]) and int(s5[i][3])==int(s5[j][3]) and int(s5[i][4])==int(s5[j][4])):
@@ -254,6 +270,7 @@ def highdegree_removal(file8,file8_1):
 	####
 	realdegree=list(realG.degree)
 	realdegreeseq=[realdegree[i][1] for i in range(len(realdegree))]
+	#realdegreeseq=[realdegree[i] for i in range(len(realdegree))]
 	ddg={}
 	for i in range(len(realdegreeseq)):
 		ddg[i]=realdegreeseq[i]

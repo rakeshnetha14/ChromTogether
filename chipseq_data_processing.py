@@ -13,15 +13,23 @@ def bipartite_info(file1,chipseq_folder):
 	f=open(file1,'r');
 	s=[line.split('\t') for line in f];
 	f.close();
+	s_array=np.array(s)
+	chID=np.unique(s_array[:,0])
+	chID_d={}
+	chID_d={}
+	chID_d[s[0][0]]=0;
 	#####
 	ra=[0];
 	chid=s[0][0];
 	k=0;
-	for l in range(22):
+	i1=0;
+	for l in range(len(chID)-1):
 		while(chid==s[k][0]):
 			k+=1;
 		ra.append(k);
+		chID_d[s[k][0]]=i1+1;
 		chid=s[k][0];
+		i1+=1;
 	ra.append(len(s));
 	#####
 	s=np.array(s);
@@ -37,14 +45,21 @@ def bipartite_info(file1,chipseq_folder):
 		with open(chipseq_folder+'/'+chipf[z],'r') as f1:
 			s1=[line.split('\t')[0:3] for line in f1];
 		f1.close();
+		s1_array=np.array(s1)
+		chID1=np.unique(s1_array[:,0])
+		chID1_d={}
+		chID1_d[s1[0][0]]=0;
 		ra1=[0];
 		chid=s1[0][0];
 		k=0;
-		for l in range(22):
+		i1=0;
+		for l in range(len(chID1)-1):
 			while(chid==s1[k][0]):
 				k+=1;
 			ra1.append(k);
+			chID1_d[s1[k][0]]=i1+1;
 			chid=s1[k][0];
+			i1+=1;
 		ra1.append(len(s1));
 		s1=np.array(s1);
 		a1=s1[:,1];
@@ -57,11 +72,12 @@ def bipartite_info(file1,chipseq_folder):
 		f2.close();
 		ind=[];
 		ind1=[];
-		for i in range(23):
-			for l in range(ra1[i],ra1[i+1]):
-				for k in range(ra[i],ra[i+1]):
-					if((a1[l]<=b1[k]<=a2[l]) or (a1[l]<=b2[k]<=a2[l]) or (b1[k]<=a1[l]<=b2[k]) or (b1[k]<=a2[l]<=b2[k])):
-						ind.append(k);
+		for i in range(len(chID)):
+			if chID1_d.has_key(chID[i]):
+				for l in range(ra1[chID1_d[chID[i]]],ra1[chID1_d[chID[i]]+1]):
+					for k in range(ra[chID_d[chID[i]]],ra[chID_d[chID[i]]+1]):
+						if((a1[l]<=b1[k]<=a2[l]) or (a1[l]<=b2[k]<=a2[l]) or (b1[k]<=a1[l]<=b2[k]) or (b1[k]<=a2[l]<=b2[k])):
+							ind.append(k);
 		q2=np.unique(ind);
 		c3=np.zeros(len(s));
 		j2=0;
@@ -83,11 +99,12 @@ def bipartite_info(file1,chipseq_folder):
 		f4.close();
 		ind=[];
 		ind1=[];
-		for i in range(23):
-			for l in range(ra1[i],ra1[i+1]):
-				for k in range(ra[i],ra[i+1]):
-					if((a1[l]<=b1[k]<=a2[l]) or (a1[l]<=b2[k]<=a2[l]) or (b1[k]<=a1[l]<=b2[k]) or (b1[k]<=a2[l]<=b2[k])):
-						ind.append(k);
+		for i in range(len(chID)):
+			if chID1_d.has_key(chID[i]):
+				for l in range(ra1[chID_d[chID[i]]],ra1[chID_d[chID[i]]+1]):
+					for k in range(ra[chID_d[chID[i]]],ra[chID_d[chID[i]]+1]):
+						if((a1[l]<=b1[k]<=a2[l]) or (a1[l]<=b2[k]<=a2[l]) or (b1[k]<=a1[l]<=b2[k]) or (b1[k]<=a2[l]<=b2[k])):
+							ind.append(k);
 		q2, q2c = np.unique(ind, return_counts=True)
 		c3=np.zeros(len(s));
 		j2=0;
