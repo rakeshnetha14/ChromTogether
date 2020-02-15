@@ -251,9 +251,9 @@ def qvalues(file1,file2,nb,ntfs,peaks,dimension):
 		for row in reader:
 			for z1 in range(ntfs):
 				pv1.append((int(row[z1])+1)/float(nb+1))
-	fdr,t=fdrestimate(pv,ntfs)
+	fdr,t=fdrestimate(pv,ntfs*ntfs)
 	q=qvalueCalculate(pv,fdr,t)
-	fdr,t=fdrestimate(pv1,ntfs)
+	fdr,t=fdrestimate(pv1,ntfs*ntfs)
 	qdash=qvalueCalculate(pv1,fdr,t)
 	f4=open('qv_'+peaks+'_'+dimension+'.dat','w')
 	count=0
