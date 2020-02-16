@@ -7,6 +7,7 @@ import csv
 import networkx as nx
 import matplotlib
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 os.system('mkdir randomizations')
 
@@ -295,8 +296,10 @@ def heatmap_generation(file1,file2,ntfs):
 	f6.close();
 	fig=plt.figure(figsize=(18,15))
 	ax=fig.add_subplot(111)
-	cax = ax.matshow(M, interpolation='nearest',cmap=newcmp,vmin=0, vmax=1)
-	fig.colorbar(cax)
+	im = ax.matshow(M, interpolation='nearest',cmap=newcmp,vmin=0, vmax=1)
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes("right", size="2%", pad=0.1)
+	fig.colorbar(im,cax=cax)
 	ax.set_xticks(np.arange(ntfs))
 	ax.set_yticks(np.arange(ntfs))
 	ax.set_xticklabels(s6,fontsize=14,weight='bold')
