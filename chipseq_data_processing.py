@@ -101,7 +101,7 @@ def bipartite_info(file1,chipseq_folder):
 		ind1=[];
 		for i in range(len(chID)):
 			if chID1_d.has_key(chID[i]):
-				for l in range(ra1[chID_d[chID[i]]],ra1[chID_d[chID[i]]+1]):
+				for l in range(ra1[chID1_d[chID[i]]],ra1[chID1_d[chID[i]]+1]):
 					for k in range(ra[chID_d[chID[i]]],ra[chID_d[chID[i]]+1]):
 						if((a1[l]<=b1[k]<=a2[l]) or (a1[l]<=b2[k]<=a2[l]) or (b1[k]<=a1[l]<=b2[k]) or (b1[k]<=a2[l]<=b2[k])):
 							ind.append(k);
