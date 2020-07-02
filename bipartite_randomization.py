@@ -6,8 +6,8 @@ import copy
 import csv
 import networkx as nx
 import matplotlib
-import matplotlib.pyplot as plt
 from matplotlib import colors
+import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 os.system('mkdir randomizations')
@@ -146,12 +146,17 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 			elif wd<=10:
 				cfr=np.random.choice(5,1)
 				wdf=wd+cfrl2[int(cfr)]
+				while len(lB[int(wdf)])==0:
+					cfr=np.random.choice(5,1)
+					wdf=wd+cfrl2[int(cfr)]
 				ren1=np.random.choice(len(lB[int(wdf)]),1)
 				rer2=randomBedges[lB[int(wdf)][ren1[0]]][0]
 				ret2=randomBedges[lB[int(wdf)][ren1[0]]][1]
 				retp2=randomBedges[lB[int(wdf)][ren1[0]]][2]
 			else:
 				wdf=random.choice(np.unique(ddg.values())[10:])
+				while len(lB[int(wdf)])==0:
+					wdf=random.choice(np.unique(ddg.values())[10:])
 				ren1=np.random.choice(len(lB[int(wdf)]),1)
 				rer2=randomBedges[lB[int(wdf)][ren1[0]]][0]
 				ret2=randomBedges[lB[int(wdf)][ren1[0]]][1]
@@ -314,12 +319,12 @@ def heatmap_generation(file1,file2,ntfs):
 	ax1=ax.imshow(M,cmap=newcmp)
 	ax.set_xticks(range(len(s6)))
 	ax.set_yticks(range(len(s6)))
-	ax.set_xticklabels(s6, rotation='vertical', fontsize=8, fontweight = 'bold')
+	ax.set_xticklabels(s6, rotation='vertical', fontsize=3, fontweight = 'bold')
 	ax.xaxis.set_ticks_position('top')
-	ax.set_yticklabels(s6, fontsize=8, fontweight = 'bold')
+	ax.set_yticklabels(s6, fontsize=3, fontweight = 'bold')
 	fig.colorbar(ax1)
-	plt.savefig(file1_name+'.png',dpi=180)
-	plt.savefig(file1_name+'.pdf',dpi=180)
+	plt.savefig(file1_name+'.png',dpi=500,bbox_inches='tight')
+	plt.savefig(file1_name+'.pdf',dpi=500,bbox_inches='tight')
 	
 
 
