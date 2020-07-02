@@ -6,6 +6,7 @@ import copy
 import csv
 import networkx as nx
 import matplotlib
+from matplotlib import colors
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
@@ -145,12 +146,17 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 			elif wd<=10:
 				cfr=np.random.choice(5,1)
 				wdf=wd+cfrl2[int(cfr)]
+				while len(lB[int(wdf)])==0:
+					cfr=np.random.choice(5,1)
+					wdf=wd+cfrl2[int(cfr)]
 				ren1=np.random.choice(len(lB[int(wdf)]),1)
 				rer2=randomBedges[lB[int(wdf)][ren1[0]]][0]
 				ret2=randomBedges[lB[int(wdf)][ren1[0]]][1]
 				retp2=randomBedges[lB[int(wdf)][ren1[0]]][2]
 			else:
 				wdf=random.choice(np.unique(ddg.values())[10:])
+				while len(lB[int(wdf)])==0:
+					wdf=random.choice(np.unique(ddg.values())[10:])
 				ren1=np.random.choice(len(lB[int(wdf)]),1)
 				rer2=randomBedges[lB[int(wdf)][ren1[0]]][0]
 				ret2=randomBedges[lB[int(wdf)][ren1[0]]][1]
@@ -282,6 +288,7 @@ def heatmap_generation(file1,file2,ntfs):
 		M1[j][0]=0.25+((0.75/50)*(j-949))
 	for k in range(1000):
 		M1[k][3]=1.0
+	newcmp=colors.LinearSegmentedColormap.from_list('my_colormap', M1)
 	f5=open(file1,'r');
 	s5=[line.split('\t') for line in f5]
 	f5.close()
@@ -289,11 +296,12 @@ def heatmap_generation(file1,file2,ntfs):
 	for i in range(ntfs):
 		for j in range(ntfs):
 			M[i][j]=float(s5[i][j])
-	newcmp = matplotlib.colors.ListedColormap(M1)
+	#newcmp = matplotlib.colors.ListedColormap(M1)
 	[file1_name,file1_extension]=file1.split('.')
 	f6=open(file2,'r');
 	s6=f6.readlines();
 	f6.close();
+	'''
 	fig=plt.figure(figsize=(18,15))
 	ax=fig.add_subplot(111)
 	im = ax.matshow(M, interpolation='nearest',cmap=newcmp,vmin=0, vmax=1)
@@ -306,8 +314,17 @@ def heatmap_generation(file1,file2,ntfs):
 	ax.set_yticklabels(s6,fontsize=14,weight='bold')
 	ax.xaxis.set_ticks_position('bottom')
 	ax.xaxis.set_tick_params(rotation=90 )
-	plt.savefig(file1_name+'.png',dpi=180)
-	plt.savefig(file1_name+'.pdf',dpi=180)
+	'''
+	fig, ax = plt.subplots()
+	ax1=ax.imshow(M,cmap=newcmp)
+	ax.set_xticks(range(len(s6)))
+	ax.set_yticks(range(len(s6)))
+	ax.set_xticklabels(s6, rotation='vertical', fontsize=3, fontweight = 'bold')
+	ax.xaxis.set_ticks_position('top')
+	ax.set_yticklabels(s6, fontsize=3, fontweight = 'bold')
+	fig.colorbar(ax1)
+	plt.savefig(file1_name+'.png',dpi=500,bbox_inches='tight')
+	plt.savefig(file1_name+'.pdf',dpi=500,bbox_inches='tight')
 	
 
 
