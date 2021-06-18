@@ -47,7 +47,7 @@ def individual_fragments(ffile1):
 
 def merging_fragments(file1,file2):
 	"""
-	This function corrects the coordinates in chromatin interaction data file to the corresponding overlapping regions 
+	This function changes the coordinates of fragments in chromatin interaction data file to the corresponding overlapping regions 
 	after merging the overlapping fragments into one fragment
 	"""
 	f2=open(file1,'r');
