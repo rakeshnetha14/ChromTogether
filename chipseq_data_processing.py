@@ -35,8 +35,8 @@ def bipartite_info(file1,chipseq_folder):
 	s=np.array(s);
 	b1=s[:,1];
 	b2=s[:,2];
-	b1=map(int,b1);
-	b2=map(int,b2);
+	b1=list(map(int,b1));
+	b2=list(map(int,b2));
 	#####
 	chipf_name=[]
 	for z in range(len(chipf)):
@@ -64,8 +64,8 @@ def bipartite_info(file1,chipseq_folder):
 		s1=np.array(s1);
 		a1=s1[:,1];
 		a2=s1[:,2];
-		a1=map(int,a1);
-		a2=map(int,a2);
+		a1=list(map(int,a1));
+		a2=list(map(int,a2));
 		[file1_name,file1_extension]=file1.split('.');
 		f2=open(file1_name+'_oc.'+file1_extension,'r');
 		data1=f2.readlines();
@@ -73,7 +73,7 @@ def bipartite_info(file1,chipseq_folder):
 		ind=[];
 		ind1=[];
 		for i in range(len(chID)):
-			if chID1_d.has_key(chID[i]):
+			if chID[i] in chID1_d:
 				for l in range(ra1[chID1_d[chID[i]]],ra1[chID1_d[chID[i]]+1]):
 					for k in range(ra[chID_d[chID[i]]],ra[chID_d[chID[i]]+1]):
 						if((a1[l]<=b1[k]<=a2[l]) or (a1[l]<=b2[k]<=a2[l]) or (b1[k]<=a1[l]<=b2[k]) or (b1[k]<=a2[l]<=b2[k])):
@@ -100,7 +100,7 @@ def bipartite_info(file1,chipseq_folder):
 		ind=[];
 		ind1=[];
 		for i in range(len(chID)):
-			if chID1_d.has_key(chID[i]):
+			if chID[i] in chID1_d:
 				for l in range(ra1[chID1_d[chID[i]]],ra1[chID1_d[chID[i]]+1]):
 					for k in range(ra[chID_d[chID[i]]],ra[chID_d[chID[i]]+1]):
 						if((a1[l]<=b1[k]<=a2[l]) or (a1[l]<=b2[k]<=a2[l]) or (b1[k]<=a1[l]<=b2[k]) or (b1[k]<=a2[l]<=b2[k])):
