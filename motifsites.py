@@ -5,7 +5,7 @@ import numpy as np
 
 def motif_scanning(folder1,file1,file2):
 	"""
-	This function scans the fragments regions for the presence of motif sites for PWM matrix of various TFs.
+	This function scans the fragment regions for the presence of motif sites from PWM matrix of TFs.
 	"""
 	motf=os.listdir(folder1)
 	motf.sort()
