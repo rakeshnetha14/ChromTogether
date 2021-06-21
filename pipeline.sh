@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # This is a pipeline to find the significantly attracting and repelling TF pairs in the spatial proximal regions of 
-# the chromatin data. Also, it contain also find the above TF pairs in sequentailly in the above considered regions of chromatin.
+# the chromatin data. It can also find co-occurrence of TF pairs in sequentailly contiguous regions of the genome.
 
 helpFunction()
 {
