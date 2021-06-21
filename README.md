@@ -5,8 +5,7 @@ This is a pipeline to find transcription factor(TF) pairs co-localizing in spati
 
 ### Getting Started
 
-The pipeline requires packages such as bedtools, MEME Suite 5.1.0 and Python 3.6 and python libraries i.e. numpy, networkx, 
-matplotlib etc. preinstalled in the system.
+The pipeline requires packages such as bedtools, MEME Suite 5.1.0 and Python 3.6 and python libraries i.e. numpy, networkx, matplotlib etc. preinstalled in the system.
 
 ### Running the pipeline
 
