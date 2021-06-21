@@ -4,8 +4,8 @@ import numpy as np
 
 def bipartite_info(file1,chipseq_folder):
 	"""
-	This function creates a data file which contain the binding information for each TF in columns on each chromatin 
-	fragment in the rows.
+	This function creates a data file which contain the binding information for each TF in each separate column for each of the chromatin 
+	fragment.
 	"""
 	chipf=os.listdir(chipseq_folder)
 	chipf.sort()
