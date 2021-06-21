@@ -14,7 +14,7 @@ os.system('mkdir randomizations')
 
 def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 	"""
-	This function calculates for each TF pairs the number of spatial chromatin interactions on which they are co-occurring.
+	This function calculates the number of spatial chromatin interactions for each of the TF pair on which the TF pair are co-occurring.
 	"""
 	f=open(file1,'r');
 	s=[line.split('\t') for line in f];
@@ -113,9 +113,9 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 						rxy[z//2][z1//2]+=1;	
 	#return rxy2,rxy
 	"""
-	This function creates random biparite graphs from real bipartite network between chromatin fragments and TFs. 
-	For each random network co-occurrence of TF pairs in spatial interactions is calculated and is compared with 
-	real network co-occurrence for each TF pair.
+	The following part of function creates random biparite graphs from the real bipartite network between chromatin fragments and TFs. 
+	For each random network, co-occurring spatial interactions are measured for each TF pair and is compared with the corresponding number in the
+	real network.
 	"""
 	countn=np.zeros([ntfs,ntfs],dtype=int);
 	countn1=np.zeros([ntfs,ntfs],dtype=int);
