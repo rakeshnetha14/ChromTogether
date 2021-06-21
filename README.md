@@ -5,7 +5,8 @@ This is a pipeline to find transcription factor(TF) pairs co-localizing in spati
 
 ### Getting Started
 
-The pipeline requires packages such as bedtools, MEME Suite 5.1.0 and Python 3.6 and python libraries i.e. numpy, networkx, matplotlib etc. preinstalled in the system.
+The pipeline requires packages such as bedtools, MEME Suite 5.1.0 and Python 3.6 and python libraries i.e. numpy, networkx, 
+matplotlib etc. preinstalled in the system.
 
 ### Running the pipeline
 
@@ -22,9 +23,12 @@ The pipeline requires packages such as bedtools, MEME Suite 5.1.0 and Python 3.6
 The pipeline requires the following input files:
 
 1)Spatially proximal chromatin region data from any of the CHIA-PET, Capture Hi-C or Hi-C experiments and the data should be in tab delimited with the 6 columns i.e. chromosome of fragment1, start position of fragment1, stop position of fragment1, chromosome of fragment2, start position of fragment2, stop position of fragment2.  
+
 2)Chip-seq peak files of TFs that one want analyze for co-occurrence of the same cell line/tissue of the chromatin interaction dataset. The chip-seq files should be in narrowPeak format which contains chromosome ID, start position of the peak, end position of the peak as first three columns. Filename of the chip-seq file should be named with TF narrowPeak as the extension. For example name of chip-seq file for ATF1 should be "ATF1.narrowPeak". Store all the renamed chip-seq files in a single directory.
-3)PWMs files in meme format for the TFs you want analyze for co-occurrence of motif sites. Name the files with TF name i.e. for "ATF1" 
-the PWM file is "ATF1.meme" and store all the files in a single directory.
+
+3)PWMs files in meme format for the TFs you want analyze for co-occurrence of motif sites. Name the files with TF name i.e. for "ATF1"  the PWM file is "ATF1.meme" and store all the files in a single directory.
+
+4)Reference genome sequence fasta file. For example data set provided with the tool, please download the human reference genome(hg19) from the following link https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz and then unzip and place it in the example folder.
 
 ### Output files
 
