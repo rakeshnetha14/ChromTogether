@@ -24,8 +24,8 @@ def intrachoromosomal_interactions(f1):
 	
 def individual_fragments(ffile1):
 	"""
-	This function is to create indidual fragment data file format from chromatin interaction data file, which is used 
-	for sorting and merging.
+	This function is to create indidual fragment data file from chromatin interaction data file. The individual fragment data file is used later for  
+	merging the overlapping regions.
 	"""
 	f=open(ffile1,'r');
 	s=[line.split('\t') for line in f]
@@ -47,8 +47,8 @@ def individual_fragments(ffile1):
 
 def merging_fragments(file1,file2):
 	"""
-	This function corrects the coordinates in chromatin interaction data file to the corresponding overlapping regions 
-	after merging the overlapping fragments into one fragment
+	This function changes the coordinates of fragments in chromatin interaction data file to the corresponding overlapping regions 
+	after merging process.
 	"""
 	f2=open(file1,'r');
 	s2=[line.split('\t') for line in f2];
@@ -121,7 +121,7 @@ def merging_fragments(file1,file2):
 
 def duplicate_removal(file3):
 	"""
-	This function is to remove duplicate interactions if any present in the chromatin interaction data
+	This function removes all duplicate interactions present in the chromatin interaction data
 	"""
 	f5=open(file3,'r');
 	s5=[line.split('\t') for line in f5];
@@ -170,7 +170,7 @@ def duplicate_removal(file3):
 
 def selfinteraction_removal(file4):
 	"""
-	This function is to remove self interactions if any present.
+	This function removes all self interactions present in the chromatin interaction data.
 	"""
 	f8=open(file4,'r');
 	s8=[line.split('\t') for line in f8];
@@ -225,7 +225,7 @@ def shortrangeinteraction_removal(file5):
 
 def makingnodefile(file6,file7):
 	"""
-	This function assigns each fragment in the chromatin interaction data file with the node number
+	This function assigns each fragment in the chromatin interaction data file with a node number
 	"""
 	f14=open(file6,'r');
 	d={}
@@ -257,7 +257,7 @@ def makingnodefile(file6,file7):
 
 def highdegree_removal(file8,file8_1):
 	"""
-	This function is to filter out interactions containing fragment with node degree higher than some cut-off.
+	This function filters out interactions containing fragment/s with node degree higher than given cut-off value.
 	"""
 	f18=open(file8_1,'r');
 	s18=[line.split('\t') for line in f18];
@@ -298,7 +298,7 @@ def highdegree_removal(file8,file8_1):
 
 def highlength_removal(file9):
 	"""
-	This function is to remove interactions containing fragments whose length is higher than some cut-off.
+	This function removes interactions containing fragment/s whose length is higher than the given cut-off value.
 	"""
 	f21=open(file9,'r');
 	s21=[line.split('\t') for line in f21];

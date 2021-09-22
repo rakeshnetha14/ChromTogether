@@ -14,7 +14,7 @@ os.system('mkdir randomizations')
 
 def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 	"""
-	This function calculates for each TF pairs the number of spatial chromatin interactions on which they are co-occurring.
+	This function calculates the number of spatial chromatin interactions for each of the TF pair on which the TF pair are co-occurring.
 	"""
 	f=open(file1,'r');
 	s=[line.split('\t') for line in f];
@@ -31,6 +31,10 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 	ddg={}
 	for i in range(len(realdegreeseq)):
 		ddg[i]=realdegreeseq[i]
+	ddg_uni=np.sort(np.unique(list(ddg.values())))
+	tr=0;
+	while ddg_uni[tr]<=10:
+		tr+=1;
 	l=[];
 	for i in range(max(realdegreeseq)+1):
 		l.append([])
@@ -81,13 +85,13 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 	for i in range(max(realdegreeseq)+1):
 		lB.append([])
 	for i in range(len(realBedges)):
-		if ddg.has_key(realBedges[i][0]):
+		if realBedges[i][0] in ddg:
 			lB[ddg[realBedges[i][0]]].append(i)
 	d1={}
 	j1=0
 	for i in range(len(realBedges)):
 		ll=realBedges[i][0:2];
-		if d1.has_key(tuple(ll)):
+		if tuple(ll) in d1:
 			d1[tuple(ll)]+=1
 			j1+=1
 		else:
@@ -97,7 +101,7 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 		for i in range(len(realGedges)):
 			for z in d2[int(realGedges[i][0])]:
 				for z1 in d2[int(realGedges[i][1])]:
-					if(d1.has_key((int(realGedges[i][0]),len(s1)+z)) and d1.has_key((int(realGedges[i][1]),len(s1)+z1))):
+					if ((int(realGedges[i][0]),len(s1)+z) in d1 and (int(realGedges[i][1]),len(s1)+z1) in d1):
 						rxy1[z][z1]+=1;
 		rxy2=rxy1+np.transpose(rxy1)
 	elif dimension=='1D':
@@ -106,12 +110,12 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 			for z in d2[int(i)]:
 				for z1 in d2[int(i)]:
 					if z!=z1:
-						rxy[z/2][z1/2]+=1;	
+						rxy[z//2][z1//2]+=1;	
 	#return rxy2,rxy
 	"""
-	This function creates random biparite graphs from real bipartite network between chromatin fragments and TFs. 
-	For each random network co-occurrence of TF pairs in spatial interactions is calculated and is compared with 
-	real network co-occurrence for each TF pair.
+	The following part of function creates random biparite graphs from the real bipartite network between chromatin fragments and TFs. 
+	For each random network, co-occurring spatial interactions are measured for each TF pair and is compared with the corresponding number in the
+	real network.
 	"""
 	countn=np.zeros([ntfs,ntfs],dtype=int);
 	countn1=np.zeros([ntfs,ntfs],dtype=int);
@@ -127,7 +131,7 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 	d4=copy.deepcopy(d2)
 	randomBedges=copy.deepcopy(realBedges)
 	for ii in range(nb):
-		print ii
+		print(ii)
 		xy1=np.zeros([ntfs,ntfs],dtype=int);
 		xy=np.zeros([ntfs,ntfs],dtype=int);
 		jj=0
@@ -154,14 +158,14 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 				ret2=randomBedges[lB[int(wdf)][ren1[0]]][1]
 				retp2=randomBedges[lB[int(wdf)][ren1[0]]][2]
 			else:
-				wdf=random.choice(np.unique(ddg.values())[10:])
+				wdf=random.choice(ddg_uni[tr:])
 				while len(lB[int(wdf)])==0:
-					wdf=random.choice(np.unique(ddg.values())[10:])
+					wdf=random.choice(ddg_uni[tr:])
 				ren1=np.random.choice(len(lB[int(wdf)]),1)
 				rer2=randomBedges[lB[int(wdf)][ren1[0]]][0]
 				ret2=randomBedges[lB[int(wdf)][ren1[0]]][1]
 				retp2=randomBedges[lB[int(wdf)][ren1[0]]][2]
-			if(d3.has_key(tuple([rer1,ret2])) or d3.has_key(tuple([rer2,ret1]))):
+			if(tuple([rer1,ret2]) in d3 or tuple([rer2,ret1]) in d3):
 				pass
 				#jj+=1
 			else:
@@ -183,7 +187,7 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 					for z1 in d4[int(realGedges[i][1])]:
 						xy1[z][z1]+=1;
 			xy2=xy1+np.transpose(xy1)
-			with open(name1+str(ii)+'.csv', "wb") as f:
+			with open(name1+str(ii)+'.csv', 'w') as f:
     				writer = csv.writer(f)
     				writer.writerows(xy2)
 			for z in range(ntfs):
@@ -197,8 +201,8 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 				for z in d4[int(i)]:
 					for z1 in d4[int(i)]:
 						if z!=z1:
-							xy[z/2][z1/2]+=1;	
-			with open(name1+str(ii)+'.csv', "wb") as f:
+							xy[z//2][z1//2]+=1;	
+			with open(name1+str(ii)+'.csv', 'w') as f:
     				writer = csv.writer(f)
     				writer.writerows(xy)
 			for z in range(ntfs):
@@ -207,10 +211,10 @@ def bipartite_randomizations(file1,file2,nb,peaks,dimension):
 						countn[z][z1]+=1;
 					if(xy[z][z1]<=rxy[z][z1]):
 						countn1[z][z1]+=1;
-	with open('randomizations/ranp_'+peaks+'_'+dimension+'.csv', "wb") as f:
+	with open('randomizations/ranp_'+peaks+'_'+dimension+'.csv', 'w') as f:
     		writer = csv.writer(f)
     		writer.writerows(countn)
-	with open('randomizations/rann_'+peaks+'_'+dimension+'.csv', "wb") as f:
+	with open('randomizations/rann_'+peaks+'_'+dimension+'.csv', 'w') as f:
     		writer = csv.writer(f)
     		writer.writerows(countn1)
 	return ntfs
@@ -247,13 +251,13 @@ def qvalues(file1,file2,nb,ntfs,peaks,dimension):
 	This function calculates the empirical q-values for both attracting and repelling TF pairs.
 	"""
 	pv=[];
-	with open(file1, 'rb') as f2:
+	with open(file1, 'r') as f2:
 		reader = csv.reader(f2)
 		for row in reader:
 			for z1 in range(ntfs):
 				pv.append((int(row[z1])+1)/float(nb+1))
 	pv1=[]
-	with open(file2, 'rb') as f3:
+	with open(file2, 'r') as f3:
 		reader = csv.reader(f3)
 		for row in reader:
 			for z1 in range(ntfs):
@@ -270,7 +274,7 @@ def qvalues(file1,file2,nb,ntfs,peaks,dimension):
 				value=1-qdash[count]
 			else:
 				if q[count]>=0.95:
-					value = 0.935
+					value = 0.50
 				else:
 					value=q[count] 
 			f4.write(str(value)+'\t')
@@ -281,14 +285,14 @@ def heatmap_generation(file1,file2,ntfs):
 	"""
 	This function generates heatmap showing both attracting and repelling TF pairs.
 	"""
-	M1=np.zeros([1000,4],dtype=float)
+	cm=np.zeros([1000,4],dtype=float)
 	for i in range(50):
-		M1[i][1]=1-((0.75/50)*i)
+		cm[i,1]=(1-((0.75/50)*i));
 	for j in range(950,1000):
-		M1[j][0]=0.25+((0.75/50)*(j-949))
+		cm[j,0]=0.265+((0.75/50)*(j-950));
 	for k in range(1000):
-		M1[k][3]=1.0
-	newcmp=colors.LinearSegmentedColormap.from_list('my_colormap', M1)
+		cm[k,3]=1
+	cm1=colors.LinearSegmentedColormap.from_list('my_colormap', cm)
 	f5=open(file1,'r');
 	s5=[line.split('\t') for line in f5]
 	f5.close()
@@ -296,36 +300,24 @@ def heatmap_generation(file1,file2,ntfs):
 	for i in range(ntfs):
 		for j in range(ntfs):
 			M[i][j]=float(s5[i][j])
-	#newcmp = matplotlib.colors.ListedColormap(M1)
 	[file1_name,file1_extension]=file1.split('.')
 	f6=open(file2,'r');
 	s6=f6.readlines();
 	f6.close();
-	'''
-	fig=plt.figure(figsize=(18,15))
-	ax=fig.add_subplot(111)
-	im = ax.matshow(M, interpolation='nearest',cmap=newcmp,vmin=0, vmax=1)
-	divider = make_axes_locatable(ax)
-	cax = divider.append_axes("right", size="2%", pad=0.1)
-	fig.colorbar(im,cax=cax)
-	ax.set_xticks(np.arange(ntfs))
-	ax.set_yticks(np.arange(ntfs))
-	ax.set_xticklabels(s6,fontsize=14,weight='bold')
-	ax.set_yticklabels(s6,fontsize=14,weight='bold')
-	ax.xaxis.set_ticks_position('bottom')
-	ax.xaxis.set_tick_params(rotation=90 )
-	'''
 	fig, ax = plt.subplots()
-	ax1=ax.imshow(M,cmap=newcmp)
-	ax.set_xticks(range(len(s6)))
-	ax.set_yticks(range(len(s6)))
-	ax.set_xticklabels(s6, rotation='vertical', fontsize=3, fontweight = 'bold')
+	ax1=ax.imshow(M,cmap=cm1, vmin=0, vmax=1)
+	ax.grid(False)
+	ax.set_xticks(range(ntfs))
+	ax.set_yticks(range(ntfs))
+	ax.tick_params(axis=u'both', which=u'both',length=3)
+	ax.set_xticklabels(s6, rotation='vertical', fontsize=6, fontweight = 'bold')
 	ax.xaxis.set_ticks_position('top')
-	ax.set_yticklabels(s6, fontsize=3, fontweight = 'bold')
+	ax.set_yticklabels(s6, fontsize=6, fontweight = 'bold')
 	fig.colorbar(ax1)
-	plt.savefig(file1_name+'.png',dpi=500,bbox_inches='tight')
-	plt.savefig(file1_name+'.pdf',dpi=500,bbox_inches='tight')
-	
+	plt.tight_layout(rect=[0,0,1,1])
+	plt.savefig(file1_name+'.png',dpi=600,bbox_inches='tight')
+	plt.savefig(file1_name+'.pdf',dpi=600,bbox_inches='tight')
+	plt.close()
 
 
 
