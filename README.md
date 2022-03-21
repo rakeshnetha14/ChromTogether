@@ -1,4 +1,3 @@
-%# TF_colocalization_3Dchromatin
 # Co-occurring TF pair Finder in 3D genome (CoTFin3D)
 Pipeline to find colocalizing TF pairs in 3D chromatin
 
