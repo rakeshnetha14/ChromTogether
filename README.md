@@ -1,4 +1,4 @@
-# Co-occurring TF pair Finder in 3D genome (CoTFin3D)
+# ChromTogether
 Pipeline to find colocalizing TF pairs in 3D chromatin
 
 This is a pipeline to find transcription factor(TF) pairs co-localizing in spatially proximal chromatin regions. Also, the pipeline can find the co-localizing TF pairs in sequential contiguous i.e. on linear genome too.
@@ -9,7 +9,7 @@ The pipeline requires packages such as bedtools, MEME Suite 5.1.0 and Python 3.6
 
 ### Running the pipeline
 
-	Usage: ./CoTFin3D.sh -a <filename> -b <genomefastafile> -c <chipseq_directory> -d <pwm_directory> -e <number_of_randomizations>
+	Usage: ./ChromTogether.sh -a <filename> -b <genomefastafile> -c <chipseq_directory> -d <pwm_directory> -e <number_of_randomizations>
 		-a chromatin fragment interaction file
 		-b genome sequence fasta file
 		-c directory containing chip-seq files and is optional if you want analyse binding sites
