@@ -43,5 +43,5 @@ The directory "example" provided here contains example_interactions.bed which co
 
 Execute the following command:
 
-	./CoTFin3D.sh -a example/example_interactions.bed -b "path of the genome sequence file" -c chipseq -d pwm -e 500
+	./ChromTogether.sh -a example/example_interactions.bed -b "path of the genome sequence file" -c chipseq -d pwm -e 500
 
